@@ -253,15 +253,18 @@ export function createSculpture(canvas, opts) {
       modelOpts.url,
       (gltf) => {
         const root = gltf.scene || (gltf.scenes && gltf.scenes[0]);
-        if (!root) return;
+        if (!root) { state.modelReady = true; return; }
         root.traverse((o) => {
           if (o.isMesh) { o.castShadow = o.receiveShadow = false; o.frustumCulled = false; }
         });
         placeModel(root);
+        state.modelReady = true;
       },
       undefined,
-      (err) => { console.warn('sculpture: GLB load failed, keeping procedural form', err); }
+      (err) => { console.warn('sculpture: GLB load failed, keeping procedural form', err); state.modelReady = true; }
     );
+  } else {
+    state.modelReady = true;   // nothing to wait for — the fallback is the model
   }
 
   // plinth — a tall museum column, top at y=0

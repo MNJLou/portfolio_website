@@ -137,8 +137,8 @@
   <div data-intro data-screen-label="Intro" style="position:fixed;inset:0;z-index:80;background:#0c0b0a;display:flex;align-items:center;justify-content:center;will-change:transform">
     <div data-intro-inner style="text-align:center">
       <div data-intro-kicker style="font-family:var(--mono);font-size:11px;letter-spacing:0.32em;text-transform:uppercase;color:var(--muted);opacity:0;margin-bottom:28px">Portfolio — MMXXVI</div>
-      <div style="overflow:hidden;padding:0 10px">
-        <div data-intro-name style="font-family:var(--serif);font-weight:400;font-size:clamp(58px,9vw,132px);line-height:1.02;letter-spacing:-0.02em;color:var(--fg);transform:translateY(112%)">Jerome <span style="font-style:italic;font-weight:300">Lou</span></div>
+      <div style="overflow:hidden;padding:0 10px 0.14em"><!-- bottom padding keeps the J's descender inside the reveal mask -->
+        <div data-intro-name style="font-family:var(--serif);font-weight:400;font-size:clamp(58px,9vw,132px);line-height:1.02;letter-spacing:-0.02em;color:var(--fg);transform:translateY(120%)">Jerome <span style="font-style:italic;font-weight:300">Lou</span></div>
       </div>
       <div data-intro-line style="width:min(40vw,320px);height:1px;background:var(--hair);margin:30px auto 0;transform:scaleX(0);transform-origin:left"></div>
     </div>
@@ -202,8 +202,9 @@ const experience = [
 // ---- app state -------------------------------------------------------------
 const app = { openProject: null };
 
-// scene state shared with the sculpture module (extra* + glMul are intro-driven)
-const scn = { progress: 0, px: 0, py: 0, cx: null, cy: null, frameX: 0, frameY: 0, zoomAmt: 0.6, extraRad: 0, extraAz: 0, extraEl: 0, glMul: 1 };
+// scene state shared with the sculpture module (extra* + glMul are intro-driven;
+// modelReady is set by sculpture.js once the GLB is placed — or load fails)
+const scn = { progress: 0, px: 0, py: 0, cx: null, cy: null, frameX: 0, frameY: 0, zoomAmt: 0.6, extraRad: 0, extraAz: 0, extraEl: 0, glMul: 1, modelReady: false };
 
 // lighting defaults (were live-tunable props in the design tool)
 const LIGHTING = { angle: 130, intensity: 0.9, contrast: 0.7 };
@@ -531,7 +532,7 @@ function startIntro() {
       overlay.style.display = 'flex';
       overlay.style.transform = 'none';
       if (kick) kick.style.opacity = '0';
-      if (name) name.style.transform = 'translateY(112%)';
+      if (name) name.style.transform = 'translateY(120%)';
       if (line) line.style.transform = 'scaleX(0)';
       if (inner) inner.style.transform = 'none';
     } else {
@@ -548,10 +549,20 @@ function startIntro() {
   const eio = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
   const seg = (t, a, b, e) => (e || eoc)(clamp01((t - a) / (b - a)));
 
-  const t0 = performance.now();
+  // the curtain doubles as a preloader: its clock freezes at the brink of the
+  // lift until the sculpture GLB is in (or HOLD_MAX passes — broken network
+  // shouldn't strand the page behind the curtain).
+  const HOLD_AT = 0.60 * D;
+  const HOLD_MAX = 12;
+  let t = 0, last = performance.now(), heldFor = 0;
   let fc = 0;
   const frame = () => {
-    const t = (performance.now() - t0) / 1000;
+    const now = performance.now();
+    t += (now - last) / 1000; last = now;
+    if (variant === 'curtain' && t > HOLD_AT && !scn.modelReady && heldFor < HOLD_MAX) {
+      heldFor += t - HOLD_AT;
+      t = HOLD_AT;
+    }
     fc++;
 
     // staggered hero lines
@@ -569,7 +580,7 @@ function startIntro() {
 
     if (variant === 'curtain') {
       if (kick) kick.style.opacity = seg(t, 0.04 * D, 0.28 * D).toFixed(3);
-      if (name) { const ne = seg(t, 0.08 * D, 0.45 * D, eoq); name.style.transform = 'translateY(' + ((1 - ne) * 112).toFixed(1) + '%)'; }
+      if (name) { const ne = seg(t, 0.08 * D, 0.45 * D, eoq); name.style.transform = 'translateY(' + ((1 - ne) * 120).toFixed(1) + '%)'; }
       if (line) line.style.transform = 'scaleX(' + seg(t, 0.18 * D, 0.56 * D, eio).toFixed(3) + ')';
       // curtain lifts
       const ex = seg(t, 0.60 * D, 0.60 * D + Math.max(0.7, 0.33 * D), eio);
