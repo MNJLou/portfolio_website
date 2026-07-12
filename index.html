@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jerome Lou — Multimedia Designer &amp; Product Manager</title>
+<meta name="description" content="Jerome Lou — a multimedia generalist turned product manager. Selected works across UX, motion, 3D and product.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;overflow:hidden;height:100%}
+  body{background:#0c0b0a}
+  ::selection{background:#ECE7DE;color:#0c0b0a}
+  a{color:inherit}
+  @keyframes cue{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(7px);opacity:1}}
+  image-slot::part(frame){background:rgba(236,231,222,0.05)}
+  image-slot::part(empty){color:#8f897f}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+<script src="./image-slot.js"></script>
+</head>
+<body>
+
+<div id="page" style="--bg:#0c0b0a;--panel:#100f0d;--fg:#ECE7DE;--muted:#928c82;--faint:#6f6a62;--line:rgba(236,231,222,0.14);--hair:rgba(236,231,222,0.26);--stone:#C7BCA9;--plate:#141311;--stripe:rgba(236,231,222,0.045);--serif:'Cormorant Garamond',Georgia,serif;--sans:'Helvetica Neue',Helvetica,Arial,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;background:#0c0b0a;color:#ECE7DE;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;height:100vh;overflow:hidden;touch-action:none">
+
+  <canvas id="gl" style="position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;display:block"></canvas>
+
+  <!-- film grain -->
+  <div aria-hidden="true" style="position:fixed;inset:0;z-index:50;pointer-events:none;opacity:0.05;mix-blend-mode:overlay;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.82%22 numOctaves=%222%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E');background-size:170px 170px"></div>
+
+  <!-- top scrim so the nav stays legible over the model -->
+  <div aria-hidden="true" style="position:fixed;top:0;left:0;right:0;height:130px;z-index:55;pointer-events:none;background:linear-gradient(180deg,rgba(12,11,10,0.9) 0%,rgba(12,11,10,0.45) 55%,rgba(12,11,10,0) 100%)"></div>
+
+  <!-- scroll progress hairline -->
+  <div style="position:fixed;top:0;left:0;right:0;height:2px;z-index:61;pointer-events:none">
+    <div data-progress style="height:100%;width:100%;background:var(--stone);transform:scaleX(0);transform-origin:left;opacity:0.65"></div>
+  </div>
+
+  <!-- stage indicator -->
+  <div style="position:fixed;right:clamp(20px,4vw,48px);top:50%;transform:translateY(-50%);z-index:60;display:flex;flex-direction:column;gap:18px;align-items:center">
+    <div data-dotwrap style="display:flex;flex-direction:column;gap:12px;align-items:center"></div>
+    <div data-counter style="font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);writing-mode:vertical-rl">01 / 05</div>
+  </div>
+
+  <!-- nav -->
+  <nav style="position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:24px clamp(20px,4vw,48px)">
+    <a data-magnet href="#top" style="font-family:var(--serif);font-weight:500;font-size:21px;letter-spacing:0.01em;color:var(--fg);text-decoration:none;display:inline-block">Jerome&nbsp;Lou</a>
+    <div style="display:flex;align-items:center;gap:clamp(16px,2.4vw,30px);font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted)">
+      <a data-magnet data-navlink href="#work" style="text-decoration:none;color:inherit;display:inline-block">Work</a>
+      <a data-magnet data-navlink href="#about" style="text-decoration:none;color:inherit;display:inline-block">About</a>
+      <a data-magnet data-navlink href="#index" style="text-decoration:none;color:inherit;display:inline-block">Index</a>
+      <a data-magnet data-navlink href="#contact" style="text-decoration:none;color:inherit;display:inline-block">Contact</a>
+    </div>
+  </nav>
+
+  <!-- version switch -->
+  <div style="position:fixed;left:clamp(20px,4vw,48px);bottom:24px;z-index:60;display:flex;align-items:center;font-family:var(--mono);font-size:10px;letter-spacing:0.16em;text-transform:uppercase;border:1px solid var(--line);background:rgba(12,11,10,0.55);backdrop-filter:blur(10px)">
+    <span style="padding:9px 13px;color:var(--bg);background:var(--fg)">Black</span>
+    <a href="portfolio-light.html" style="padding:9px 13px;color:var(--muted);text-decoration:none">White</a>
+  </div>
+
+  <!-- ============ PINNED, ZOOM-REVEALED CARDS (all transparent, over the model) ============ -->
+  <div id="stage" style="position:fixed;inset:0;z-index:2">
+
+    <!-- 0 · HERO -->
+    <section data-stage="0" id="top" data-screen-label="Hero" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-start;padding:96px clamp(24px,7vw,118px);opacity:1;will-change:opacity,transform;pointer-events:auto">
+      <div style="width:min(92vw,620px);text-shadow:0 1px 34px rgba(8,7,6,0.45)">
+        <div style="font-family:var(--mono);font-size:12px;letter-spacing:0.22em;color:var(--muted);text-transform:uppercase;margin-bottom:22px">Multimedia Designer &nbsp;✦&nbsp; Product Manager</div>
+        <h1 style="margin:0;font-family:var(--serif);font-weight:400;font-size:clamp(56px,11.5vw,156px);line-height:0.84;letter-spacing:-0.02em">Jerome<br><span style="font-style:italic;font-weight:300">Lou</span></h1>
+        <p style="max-width:400px;margin:30px 0 0;font-size:15.5px;line-height:1.65;color:var(--muted)">A multimedia generalist who became a product manager — moving between pixels, prototypes, 3D and the roadmap behind them.</p>
+        <a data-magnet href="#work" style="display:inline-flex;align-items:center;gap:12px;margin-top:34px;font-family:var(--mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--fg);text-decoration:none">Scroll to explore<span style="animation:cue 2s ease-in-out infinite;font-size:15px">↓</span></a>
+      </div>
+    </section>
+
+    <!-- 1 · WORK -->
+    <section data-stage="1" id="work" data-screen-label="Work" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-end;padding:96px clamp(24px,7vw,118px);opacity:0;will-change:opacity,transform;pointer-events:none">
+
+      <!-- COLLECTION LIST -->
+      <div data-collection style="width:min(92vw,438px);text-shadow:0 1px 26px rgba(8,7,6,0.6)">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px">
+          <div style="font-family:var(--mono);font-size:11px;letter-spacing:0.22em;color:var(--muted);text-transform:uppercase">I — Selected Works</div>
+          <span style="font-family:var(--mono);font-size:10px;letter-spacing:0.14em;color:var(--faint)">07 pieces</span>
+        </div>
+        <h2 style="margin:0 0 16px;font-family:var(--serif);font-weight:400;font-size:clamp(38px,5.4vw,58px);line-height:0.94;letter-spacing:-0.015em">The Collection</h2>
+        <div data-rows></div>
+      </div>
+
+      <!-- PROJECT DETAIL — takes over the collection (built on demand) -->
+      <div data-detail style="display:none"></div>
+
+    </section>
+
+    <!-- 2 · ABOUT -->
+    <section data-stage="2" id="about" data-screen-label="About" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-start;padding:96px clamp(24px,7vw,118px);opacity:0;will-change:opacity,transform;pointer-events:none">
+      <div style="width:min(92vw,446px);text-shadow:0 1px 26px rgba(8,7,6,0.6)">
+        <div style="font-family:var(--mono);font-size:11px;letter-spacing:0.22em;color:var(--muted);text-transform:uppercase;margin-bottom:20px">II — About</div>
+        <p style="margin:0 0 24px;font-family:var(--serif);font-weight:400;font-size:clamp(26px,3.2vw,38px);line-height:1.26;letter-spacing:-0.01em">I started in <span style="font-style:italic">multimedia</span> — animation, 3D, motion and interface design — and now lead product as a <span style="font-style:italic">PM</span>.</p>
+        <p style="margin:0 0 14px;font-size:14.5px;line-height:1.75;color:var(--muted)">That mix is the point: I speak the language of designers, developers and stakeholders, then translate ideas into things people actually ship.</p>
+        <p style="margin:0;font-size:14.5px;line-height:1.75;color:var(--muted)">From e-commerce flows to VR environments, the through-line is the same — build something considered, then make it usable.</p>
+      </div>
+    </section>
+
+    <!-- 3 · INDEX -->
+    <section data-stage="3" id="index" data-screen-label="Index" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-end;padding:96px clamp(24px,7vw,118px);opacity:0;will-change:opacity,transform;pointer-events:none">
+      <div style="width:min(90vw,372px);text-shadow:0 1px 26px rgba(8,7,6,0.6)">
+        <div style="font-family:var(--mono);font-size:11px;letter-spacing:0.22em;color:var(--muted);text-transform:uppercase;margin-bottom:18px">III — Index</div>
+        <h3 style="margin:0 0 8px;font-family:var(--serif);font-weight:400;font-size:22px;letter-spacing:-0.01em">Capabilities</h3>
+        <div data-skills></div>
+        <h3 style="margin:22px 0 8px;font-family:var(--serif);font-weight:400;font-size:22px;letter-spacing:-0.01em">Curriculum</h3>
+        <div data-experience></div>
+      </div>
+    </section>
+
+    <!-- 4 · CONTACT -->
+    <section data-stage="4" id="contact" data-screen-label="Contact" style="position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding:0 clamp(24px,7vw,118px) clamp(56px,11vh,104px);opacity:0;will-change:opacity,transform;pointer-events:none">
+      <div style="width:min(92vw,640px);text-align:center;text-shadow:0 1px 30px rgba(8,7,6,0.55)">
+        <div style="font-family:var(--mono);font-size:11px;letter-spacing:0.22em;color:var(--muted);text-transform:uppercase;margin-bottom:20px">IV — Contact</div>
+        <h2 style="margin:0;font-family:var(--serif);font-weight:400;font-size:clamp(40px,6.4vw,86px);line-height:0.92;letter-spacing:-0.02em">Let's make something<br><span style="font-style:italic;font-weight:300">that lasts.</span></h2>
+        <a data-magnet href="mailto:jerome@example.com" style="display:inline-block;margin-top:28px;font-family:var(--serif);font-size:clamp(22px,3vw,34px);font-weight:400;color:var(--fg);text-decoration:none;border-bottom:1px solid var(--hair);padding-bottom:6px">jerome@example.com</a>
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(18px,3vw,32px);margin-top:30px;font-family:var(--mono);font-size:11px;letter-spacing:0.14em;color:var(--muted);text-transform:uppercase">
+          <a data-magnet href="#" style="text-decoration:none;color:inherit;display:inline-block">LinkedIn ↗</a>
+          <a data-magnet href="#" style="text-decoration:none;color:inherit;display:inline-block">Behance ↗</a>
+          <a data-magnet href="#" style="text-decoration:none;color:inherit;display:inline-block">GitHub ↗</a>
+          <a data-magnet href="#" style="text-decoration:none;color:inherit;display:inline-block">Instagram ↗</a>
+        </div>
+        <div style="margin-top:30px;font-family:var(--mono);font-size:10px;letter-spacing:0.12em;color:var(--faint);text-transform:uppercase">© 2026 Jerome Lou &nbsp;·&nbsp; Multimedia · Product · 3D</div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script type="module">
+// ============================================================================
+// Portfolio — standalone port of Portfolio.dc.html (Claude Design).
+// The original ran on Claude's <x-dc>/DCLogic runtime; this reproduces the
+// same behaviour in plain JS: a virtual-scroll "stage" engine, a Three.js
+// sculpture background, magnetic links, and an expandable Work collection.
+// ============================================================================
+
+// ---- content ---------------------------------------------------------------
+const projects = [
+  { num: '01', name: 'Persuasive', kind: 'E-commerce', role: 'UX & Build', year: '2024', slot: 'work-shot-01',
+    cap: 'Drop project image', blurb: 'Conversion-focused storefront, content-led.',
+    desc: 'A conversion-focused storefront with a persuasive, content-led shopping flow — from first landing to checkout, designed to guide and reassure at every step.',
+    tags: ['UX', 'UI', 'E-commerce'] },
+  { num: '02', name: 'Cricket Scorer', kind: 'Mobile App', role: 'Product Design', year: '2024', slot: 'work-shot-02',
+    cap: 'Drop project image', blurb: 'Live scoring & stats for cricket.',
+    desc: 'A real-time scoring and statistics tracker for live cricket matches, keeping ball-by-ball detail legible at a glance on the smallest screens.',
+    tags: ['Product', 'Mobile', 'Data'] },
+  { num: '03', name: 'Cardoso', kind: 'Mobile App', role: 'End-to-end UX', year: '2025', slot: 'work-shot-03',
+    cap: 'Drop project image', blurb: 'Restaurant discovery & booking.',
+    desc: 'A restaurant discovery and table-booking experience, end to end — from browsing menus to confirming a table in a few considered taps.',
+    tags: ['UX', 'UI', 'Booking'] },
+  { num: '04', name: 'Animation', kind: 'Motion', role: 'Direction & Motion', year: '2022', slot: 'work-shot-04',
+    cap: 'Drop project image', blurb: 'Motion & character studies.',
+    desc: 'Character and motion-graphics studies exploring timing, weight and anticipation — the fundamentals that make movement feel alive.',
+    tags: ['Motion', 'After Effects'] },
+  { num: '05', name: 'UI/UX App Design', kind: 'Case Study', role: 'Research → UI', year: '2023', slot: 'work-shot-05',
+    cap: 'Drop project image', blurb: 'End-to-end product case study.',
+    desc: 'End-to-end product design coursework taken from research and flows through to a polished high-fidelity interface and prototype.',
+    tags: ['Research', 'UX', 'UI'] },
+  { num: '06', name: '3D Modelling', kind: '3D / CGI', role: 'Modelling & Lighting', year: '2023', slot: 'work-shot-06',
+    cap: 'Drop project image', blurb: 'Hard-surface renders in Blender.',
+    desc: 'Hard-surface and environment renders built, textured and lit in Blender — an ongoing study of form, material and light.',
+    tags: ['Blender', '3D', 'Lighting'] },
+  { num: '07', name: 'VR Application', kind: 'Immersive', role: 'Interaction Design', year: '2024', slot: 'work-shot-07',
+    cap: 'Drop project image', blurb: 'Immersive VR with spatial UI.',
+    desc: 'An interactive VR environment with spatial UI and hand interactions, designed for comfort and presence inside the headset.',
+    tags: ['VR / XR', 'Unity', '3D'] }
+];
+
+const skills = [
+  { label: 'Design', line: 'Figma · XD · Illustrator · Photoshop · After Effects' },
+  { label: '3D / XR', line: 'Blender · Substance · Unity · VR / XR' },
+  { label: 'Product', line: 'Roadmapping · Research · Jira · Notion · A/B' },
+  { label: 'Build', line: 'HTML / CSS · JavaScript · Prototyping · Webflow' }
+];
+
+const experience = [
+  { year: '2025 —', role: 'Product Manager', org: 'Current Role' },
+  { year: '2024', role: 'Multimedia Designer', org: 'Studio / Freelance' },
+  { year: '2021–24', role: 'BA Multimedia', org: 'University' }
+];
+
+// ---- app state -------------------------------------------------------------
+const app = { openProject: null };
+
+// scene state shared with the sculpture module
+const scn = { progress: 0, px: 0, py: 0, cx: null, cy: null, frameX: 0, frameY: 0, zoomAmt: 0.6 };
+
+// lighting defaults (were live-tunable props in the design tool)
+const LIGHTING = { angle: 130, intensity: 0.9, contrast: 0.7 };
+
+// stage framing — model & card sit on opposite sides so cards stay legible.
+// fx>0 pushes the model LEFT (card on the right); fx<0 pushes it RIGHT.
+const STAGES = [
+  { id: 'top',     fx: -1.1, fy:  0.1 },
+  { id: 'work',    fx:  2.1, fy:  0.5 },
+  { id: 'about',   fx: -2.1, fy: -0.1 },
+  { id: 'index',   fx:  2.1, fy:  0.35 },
+  { id: 'contact', fx:  0.0, fy: -1.1, dim: 0.5 }
+];
+const N = STAGES.length;
+const STEP = 760;                 // virtual scroll distance per stage
+const MAXV = (N - 1) * STEP;
+const EXTRA_PAN = 1.0;            // extra sideways push when a project is open
+
+let _v = 0;                       // virtual scroll target (continuous)
+let _smooth = 0;                  // eased virtual position
+let _lastIn = -1e9;
+
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+const bump = (d) => { _v = clamp(_v + d, 0, MAXV); _lastIn = performance.now(); };
+const goStage = (i) => { _v = clamp(Math.round(i), 0, N - 1) * STEP; _lastIn = -1e9; };
+
+// ---- rendering: Work collection, detail, Index lists -----------------------
+const q = (sel) => document.querySelector(sel);
+
+function rowHTML(p, i) {
+  return `<div data-proj data-i="${i}" style="cursor:pointer;border-top:1px solid var(--line);padding:11px 0 11px 0;transition:padding .4s cubic-bezier(.2,.8,.2,1),background .4s ease">
+    <div style="display:flex;align-items:baseline;gap:14px">
+      <span style="font-family:var(--mono);font-size:10px;letter-spacing:0.1em;color:var(--faint)">${p.num}</span>
+      <span data-pname style="flex:1;font-family:var(--serif);font-size:20px;font-weight:500;line-height:1.05;transition:color .3s ease">${p.name}</span>
+      <span style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase">${p.kind}</span>
+      <span style="font-family:var(--mono);font-size:10px;letter-spacing:0.06em;color:var(--faint)">${p.year}</span>
+      <span data-plus style="font-family:var(--mono);font-size:12px;line-height:1;color:var(--faint);transition:transform .35s cubic-bezier(.2,.8,.2,1),color .3s ease">+</span>
+    </div>
+    <div data-peek style="max-height:0;opacity:0;overflow:hidden;transition:max-height .45s cubic-bezier(.2,.8,.2,1),opacity .4s ease,margin .4s ease">
+      <div style="display:flex;align-items:center;gap:14px;padding-top:10px;padding-left:24px">
+        <image-slot id="${p.slot}" shape="rounded" radius="2" placeholder="${p.num}" style="width:92px;height:58px;flex:0 0 auto;border:1px solid var(--line);color:var(--faint);font-size:8px"></image-slot>
+        <span style="flex:1;font-size:12.5px;line-height:1.5;color:var(--muted);max-width:34ch">${p.blurb}</span>
+        <span style="font-family:var(--mono);font-size:9.5px;letter-spacing:0.16em;text-transform:uppercase;color:var(--stone);white-space:nowrap">View ↗</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function detailHTML(sel) {
+  const tags = sel.tags.map((t) =>
+    `<span style="font-family:var(--mono);font-size:9.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);padding:6px 11px;white-space:nowrap">${t}</span>`
+  ).join('');
+  return `<div style="width:min(94vw,548px);text-shadow:0 1px 26px rgba(8,7,6,0.6)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="font-family:var(--mono);font-size:11px;letter-spacing:0.22em;color:var(--muted);text-transform:uppercase">${sel.num} — Selected Works</div>
+      <div data-magnet data-close style="cursor:pointer;font-family:var(--mono);font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--fg);display:inline-flex;align-items:center;gap:8px">← All works</div>
+    </div>
+    <image-slot id="${sel.slot}" shape="rounded" radius="3" placeholder="${sel.cap}" style="display:block;width:100%;height:clamp(190px,27vh,300px);border:1px solid var(--line);color:var(--muted)"></image-slot>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-top:20px">
+      <h2 style="margin:0;font-family:var(--serif);font-weight:400;font-size:clamp(34px,4.4vw,52px);line-height:0.98;letter-spacing:-0.015em">${sel.name}</h2>
+      <span style="font-family:var(--mono);font-size:10px;letter-spacing:0.1em;color:var(--faint);white-space:nowrap">${sel.year}</span>
+    </div>
+    <div style="font-family:var(--mono);font-size:10px;letter-spacing:0.14em;color:var(--stone);text-transform:uppercase;margin:8px 0 16px">${sel.kind} · ${sel.role}</div>
+    <p style="margin:0 0 18px;font-size:15px;line-height:1.72;color:var(--muted)">${sel.desc}</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">${tags}</div>
+  </div>`;
+}
+
+function enterProj(e) {
+  const row = e.currentTarget;
+  row.style.paddingLeft = '12px';
+  row.style.background = 'linear-gradient(90deg, rgba(199,188,169,0.10), transparent 72%)';
+  const nm = row.querySelector('[data-pname]'); if (nm) nm.style.color = 'var(--stone)';
+  const pk = row.querySelector('[data-peek]'); if (pk) { pk.style.maxHeight = '100px'; pk.style.opacity = '1'; }
+  const pl = row.querySelector('[data-plus]'); if (pl) { pl.style.transform = 'rotate(45deg)'; pl.style.color = 'var(--stone)'; }
+}
+function leaveProj(e) {
+  const row = e.currentTarget;
+  row.style.paddingLeft = '0px';
+  row.style.background = 'transparent';
+  const nm = row.querySelector('[data-pname]'); if (nm) nm.style.color = '';
+  const pk = row.querySelector('[data-peek]'); if (pk) { pk.style.maxHeight = '0px'; pk.style.opacity = '0'; }
+  const pl = row.querySelector('[data-plus]'); if (pl) { pl.style.transform = 'none'; pl.style.color = 'var(--faint)'; }
+}
+
+function openProj(i) { if (app.openProject !== i) { app.openProject = i; renderWork(); } }
+function closeProj() { if (app.openProject != null) { app.openProject = null; renderWork(); } }
+
+// mirror the sc-if isOpen / isClosed branches: one of the two is shown.
+function renderWork() {
+  const coll = q('[data-collection]');
+  const det = q('[data-detail]');
+  if (app.openProject != null) {
+    coll.style.display = 'none';
+    det.style.display = '';
+    det.innerHTML = detailHTML(projects[app.openProject]);
+    const close = det.querySelector('[data-close]');
+    if (close) close.addEventListener('click', closeProj);
+  } else {
+    coll.style.display = '';
+    det.style.display = 'none';
+    det.innerHTML = '';
+  }
+}
+
+function buildCollection() {
+  const rows = q('[data-rows]');
+  rows.innerHTML = projects.map(rowHTML).join('');
+  rows.querySelectorAll('[data-proj]').forEach((row) => {
+    const i = +row.dataset.i;
+    row.addEventListener('click', () => openProj(i));
+    row.addEventListener('mouseenter', enterProj);
+    row.addEventListener('mouseleave', leaveProj);
+  });
+}
+
+function buildIndex() {
+  q('[data-skills]').innerHTML = skills.map((g) =>
+    `<div style="display:grid;grid-template-columns:64px 1fr;gap:12px;padding:8px 0;border-top:1px solid var(--line);align-items:baseline">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.12em;color:var(--stone);text-transform:uppercase">${g.label}</div>
+      <div style="font-size:12.5px;line-height:1.4;color:var(--fg)">${g.line}</div>
+    </div>`).join('');
+  q('[data-experience]').innerHTML = experience.map((e) =>
+    `<div style="display:grid;grid-template-columns:64px 1fr;gap:12px;padding:8px 0;border-top:1px solid var(--line);align-items:baseline">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--stone)">${e.year}</div>
+      <div>
+        <div style="font-family:var(--serif);font-size:18px;font-weight:500;line-height:1.05">${e.role}</div>
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-top:2px">${e.org}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ---- stage indicator dots --------------------------------------------------
+let dots = [];
+function buildDots() {
+  const wrap = q('[data-dotwrap]');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  dots = [];
+  for (let i = 0; i < N; i++) {
+    const d = document.createElement('a');
+    d.href = '#' + STAGES[i].id;
+    d.style.cssText = 'width:7px;height:7px;border-radius:50%;border:1px solid var(--hair);background:transparent;transition:background .4s,transform .4s,border-color .4s;cursor:pointer;display:block';
+    wrap.appendChild(d);
+    dots.push(d);
+  }
+}
+
+// ---- input: wheel / touch / keys / mouse -----------------------------------
+function bindInput() {
+  window.addEventListener('mousemove', (e) => {
+    scn.px = (e.clientX / window.innerWidth - 0.5) * 2;
+    scn.py = (e.clientY / window.innerHeight - 0.5) * 2;
+    scn.cx = e.clientX; scn.cy = e.clientY;
+  }, { passive: true });
+
+  window.addEventListener('wheel', (e) => { e.preventDefault(); bump(e.deltaY * 2.3); }, { passive: false });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && app.openProject != null) { e.preventDefault(); closeProj(); return; }
+    const cur = Math.round(_smooth / STEP);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); goStage(cur + 1); }
+    else if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); goStage(cur - 1); }
+    else if (e.key === 'Home') { e.preventDefault(); goStage(0); }
+    else if (e.key === 'End') { e.preventDefault(); goStage(N - 1); }
+  });
+
+  let ty = null;
+  window.addEventListener('touchstart', (e) => { ty = e.touches[0].clientY; _lastIn = performance.now(); }, { passive: true });
+  window.addEventListener('touchmove', (e) => {
+    if (ty == null) return;
+    const y = e.touches[0].clientY; bump((ty - y) * 2.6); ty = y;
+    if (e.cancelable) e.preventDefault();
+  }, { passive: false });
+  window.addEventListener('touchend', () => { ty = null; _lastIn = -1e9; }, { passive: true });
+
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const idx = STAGES.findIndex((s) => s.id === a.getAttribute('href').slice(1));
+    if (idx < 0) return;
+    e.preventDefault();
+    goStage(idx);
+  });
+}
+
+// ---- pinned zoom / reveal loop ---------------------------------------------
+function runStage() {
+  const cards = Array.from(document.querySelectorAll('[data-stage]'))
+    .sort((a, b) => (+a.dataset.stage) - (+b.dataset.stage));
+  const gl = document.getElementById('gl');
+  const pbar = q('[data-progress]');
+  const counter = q('[data-counter]');
+  const navlinks = Array.from(document.querySelectorAll('[data-navlink]'));
+  const smoothstep = (x) => { x = Math.min(1, Math.max(0, x)); return x * x * (3 - 2 * x); };
+  const lerp = (a, b, t) => a + (b - a) * t;
+
+  const loop = () => {
+    // settle-snap to the nearest stage shortly after input stops
+    if (performance.now() - _lastIn > 150) {
+      const goal = Math.round(_v / STEP) * STEP;
+      _v += (goal - _v) * 0.2;
+    }
+    _smooth += (_v - _smooth) * 0.10;
+    if (Math.abs(_v - _smooth) < 0.4) _smooth = _v;
+
+    const p = Math.min(1, Math.max(0, _smooth / MAXV));
+    scn.progress = p;
+    const sf = p * (N - 1);                       // continuous stage position 0..N-1
+
+    if (pbar) pbar.style.transform = 'scaleX(' + p.toFixed(4) + ')';
+
+    // crossfade + push each card by its distance from the active stage
+    let active = 0, best = 1e9;
+    for (let i = 0; i < cards.length; i++) {
+      const d = sf - i, ad = Math.abs(d);
+      if (ad < best) { best = ad; active = i; }
+      const op = smoothstep(1 - ad / 0.62);
+      const el = cards[i];
+      el.style.opacity = op.toFixed(3);
+      el.style.transform = 'translateY(' + (d * -26).toFixed(1) + 'px) scale(' + (1 - ad * 0.05).toFixed(3) + ')';
+      el.style.filter = ad > 0.04 ? 'blur(' + Math.min(7, ad * 5).toFixed(2) + 'px)' : 'none';
+      el.style.pointerEvents = ad < 0.5 ? 'auto' : 'none';
+    }
+
+    // interpolate model framing between the two nearest stages
+    const i0 = Math.min(N - 1, Math.floor(sf));
+    const i1 = Math.min(N - 1, i0 + 1);
+    const f = smoothstep(sf - i0);
+    scn.frameX = lerp(STAGES[i0].fx, STAGES[i1].fx, f);
+    scn.frameY = lerp(STAGES[i0].fy, STAGES[i1].fy, f);
+    // per-stage dim keeps type legible where the model crosses behind it
+    const dimV = lerp(STAGES[i0].dim || 0, STAGES[i1].dim || 0, f);
+    if (gl) gl.style.opacity = (1 - dimV).toFixed(3);
+    // an open project pushes the model further aside to make room for the detail
+    if (app.openProject != null) scn.frameX += EXTRA_PAN;
+
+    if (counter) counter.textContent = String(active + 1).padStart(2, '0') + ' / ' + String(N).padStart(2, '0');
+    dots.forEach((dd, k) => {
+      const on = k === active;
+      dd.style.background = on ? 'var(--stone)' : 'transparent';
+      dd.style.borderColor = on ? 'var(--stone)' : 'var(--hair)';
+      dd.style.transform = on ? 'scale(1.25)' : 'scale(1)';
+    });
+    navlinks.forEach((l, k) => { l.style.color = (k + 1 === active) ? 'var(--fg)' : 'var(--muted)'; });
+
+    // leaving the Work stage closes any open project
+    if (active !== 1 && app.openProject != null) closeProj();
+
+    requestAnimationFrame(loop);
+  };
+  loop();
+}
+
+// ---- magnetic links --------------------------------------------------------
+function initMagnetic() {
+  const R = 95, S = 0.34;
+  const loop = () => {
+    const mx = scn.cx, my = scn.cy;
+    document.querySelectorAll('[data-magnet]').forEach((el) => {
+      const r = el.getBoundingClientRect();
+      const ex = r.left + r.width / 2, ey = r.top + r.height / 2;
+      let tx = 0, ty = 0;
+      if (mx != null) {
+        const dx = mx - ex, dy = my - ey, d = Math.hypot(dx, dy);
+        if (d < R) { const fct = 1 - d / R; tx = dx * S * fct; ty = dy * S * fct; }
+      }
+      el._mx = (el._mx || 0) + (tx - (el._mx || 0)) * 0.16;
+      el._my = (el._my || 0) + (ty - (el._my || 0)) * 0.16;
+      el.style.transform = 'translate(' + el._mx.toFixed(2) + 'px,' + el._my.toFixed(2) + 'px)';
+    });
+    requestAnimationFrame(loop);
+  };
+  loop();
+}
+
+// ---- Three.js sculpture ----------------------------------------------------
+let sculpt = null;
+function loadSculpt() {
+  if (sculpt) return;
+  const canvas = document.getElementById('gl');
+  if (!canvas) return;
+  import('./sculpture.js').then((mod) => {
+    if (sculpt) return;
+    sculpt = mod.createSculpture(canvas, {
+      theme: 'dark', state: scn, lighting: LIGHTING,
+      model: { url: './assets/PangolinAndCrocodile.opt.glb' }
+    });
+  }).catch(() => {});
+}
+let threeTries = 0;
+function waitThree() {
+  if (window.THREE) { loadSculpt(); return; }
+  if (++threeTries < 260) setTimeout(waitThree, 50);
+}
+
+// ---- boot ------------------------------------------------------------------
+buildCollection();
+renderWork();
+buildIndex();
+buildDots();
+bindInput();
+initMagnetic();
+runStage();
+waitThree();
+</script>
+</body>
+</html>

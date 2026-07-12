@@ -1,0 +1,12 @@
+{
+	"name": "jeromelou-portfolio",
+	"compatibility_date": "2026-07-12",
+	"assets": {
+		"directory": "./",
+		"not_found_handling": "404-page"
+	},
+	"routes": [
+		{ "pattern": "jeromelou.com", "custom_domain": true },
+		{ "pattern": "www.jeromelou.com", "custom_domain": true }
+	]
+}
