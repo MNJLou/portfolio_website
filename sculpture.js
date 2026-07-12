@@ -307,10 +307,10 @@ export function createSculpture(canvas, opts) {
     // camera EXAMINES the piece as you scroll: keep the orbit rotation, but
     // push IN (zoom) progressively and pan to frame whichever card is showing.
     const px = state.px || 0, py = state.py || 0;
-    const az = -0.7 + p * Math.PI * 2.15 + px * 0.16;        // scroll-driven rotation (kept)
-    const el = 0.14 + Math.sin(p * Math.PI) * 0.14 - py * 0.12;
+    const az = -0.7 + p * Math.PI * 2.15 + px * 0.16 + (state.extraAz || 0);   // scroll-driven rotation (+ intro sweep)
+    const el = 0.14 + Math.sin(p * Math.PI) * 0.14 - py * 0.12 + (state.extraEl || 0);
     const zoomAmt = state.zoomAmt == null ? 0.6 : state.zoomAmt;
-    const rad = 8.8 - p * (1.5 + zoomAmt * 2.3);             // progressive zoom-in (tweakable depth)
+    const rad = 8.8 - p * (1.5 + zoomAmt * 2.3) + (state.extraRad || 0);       // progressive zoom-in (+ intro pull-back)
 
     // smoothed framing — fx/fy are SCREEN-PAN amounts: we offset only the
     // lookAt target (not the eye) along the camera's right/up axes, which

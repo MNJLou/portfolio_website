@@ -41,13 +41,13 @@
   </div>
 
   <!-- stage indicator -->
-  <div style="position:fixed;right:clamp(20px,4vw,48px);top:50%;transform:translateY(-50%);z-index:60;display:flex;flex-direction:column;gap:18px;align-items:center">
+  <div data-chrome style="position:fixed;right:clamp(20px,4vw,48px);top:50%;transform:translateY(-50%);z-index:60;display:flex;flex-direction:column;gap:18px;align-items:center;opacity:0">
     <div data-dotwrap style="display:flex;flex-direction:column;gap:12px;align-items:center"></div>
     <div data-counter style="font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);writing-mode:vertical-rl">01 / 05</div>
   </div>
 
   <!-- nav -->
-  <nav style="position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:24px clamp(20px,4vw,48px)">
+  <nav data-chrome style="position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:24px clamp(20px,4vw,48px);opacity:0">
     <a data-magnet href="#top" style="font-family:var(--serif);font-weight:500;font-size:21px;letter-spacing:0.01em;color:var(--fg);text-decoration:none;display:inline-block">Jerome&nbsp;Lou</a>
     <div style="display:flex;align-items:center;gap:clamp(16px,2.4vw,30px);font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted)">
       <a data-magnet data-navlink href="#work" style="text-decoration:none;color:inherit;display:inline-block">Work</a>
@@ -58,7 +58,7 @@
   </nav>
 
   <!-- version switch -->
-  <div style="position:fixed;left:clamp(20px,4vw,48px);bottom:24px;z-index:60;display:flex;align-items:center;font-family:var(--mono);font-size:10px;letter-spacing:0.16em;text-transform:uppercase;border:1px solid var(--line);background:rgba(12,11,10,0.55);backdrop-filter:blur(10px)">
+  <div data-chrome style="position:fixed;left:clamp(20px,4vw,48px);bottom:24px;z-index:60;display:flex;align-items:center;font-family:var(--mono);font-size:10px;letter-spacing:0.16em;text-transform:uppercase;border:1px solid var(--line);background:rgba(12,11,10,0.55);backdrop-filter:blur(10px);opacity:0">
     <span style="padding:9px 13px;color:var(--bg);background:var(--fg)">Black</span>
     <a href="portfolio-light.html" style="padding:9px 13px;color:var(--muted);text-decoration:none">White</a>
   </div>
@@ -69,10 +69,10 @@
     <!-- 0 · HERO -->
     <section data-stage="0" id="top" data-screen-label="Hero" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-start;padding:96px clamp(24px,7vw,118px);opacity:1;will-change:opacity,transform;pointer-events:auto">
       <div style="width:min(92vw,620px);text-shadow:0 1px 34px rgba(8,7,6,0.45)">
-        <div style="font-family:var(--mono);font-size:12px;letter-spacing:0.22em;color:var(--muted);text-transform:uppercase;margin-bottom:22px">Multimedia Designer &nbsp;✦&nbsp; Product Manager</div>
-        <h1 style="margin:0;font-family:var(--serif);font-weight:400;font-size:clamp(56px,11.5vw,156px);line-height:0.84;letter-spacing:-0.02em">Jerome<br><span style="font-style:italic;font-weight:300">Lou</span></h1>
-        <p style="max-width:400px;margin:30px 0 0;font-size:15.5px;line-height:1.65;color:var(--muted)">A multimedia generalist who became a product manager — moving between pixels, prototypes, 3D and the roadmap behind them.</p>
-        <a data-magnet href="#work" style="display:inline-flex;align-items:center;gap:12px;margin-top:34px;font-family:var(--mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--fg);text-decoration:none">Scroll to explore<span style="animation:cue 2s ease-in-out infinite;font-size:15px">↓</span></a>
+        <div data-hero style="font-family:var(--mono);font-size:12px;letter-spacing:0.22em;color:var(--muted);text-transform:uppercase;margin-bottom:22px;opacity:0;transform:translateY(26px);filter:blur(8px)">Multimedia Designer &nbsp;✦&nbsp; Product Manager</div>
+        <h1 data-hero style="margin:0;font-family:var(--serif);font-weight:400;font-size:clamp(56px,11.5vw,156px);line-height:0.84;letter-spacing:-0.02em;opacity:0;transform:translateY(26px);filter:blur(8px)">Jerome<br><span style="font-style:italic;font-weight:300">Lou</span></h1>
+        <p data-hero style="max-width:400px;margin:30px 0 0;font-size:15.5px;line-height:1.65;color:var(--muted);opacity:0;transform:translateY(26px);filter:blur(8px)">A multimedia generalist who became a product manager — moving between pixels, prototypes, 3D and the roadmap behind them.</p>
+        <a data-hero data-magnet href="#work" style="display:inline-flex;align-items:center;gap:12px;margin-top:34px;font-family:var(--mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--fg);text-decoration:none;opacity:0;transform:translateY(26px);filter:blur(8px)">Scroll to explore<span style="animation:cue 2s ease-in-out infinite;font-size:15px">↓</span></a>
       </div>
     </section>
 
@@ -132,6 +132,18 @@
     </section>
 
   </div>
+
+  <!-- ============ INTRO CURTAIN (preloader) ============ -->
+  <div data-intro data-screen-label="Intro" style="position:fixed;inset:0;z-index:80;background:#0c0b0a;display:flex;align-items:center;justify-content:center;will-change:transform">
+    <div data-intro-inner style="text-align:center">
+      <div data-intro-kicker style="font-family:var(--mono);font-size:11px;letter-spacing:0.32em;text-transform:uppercase;color:var(--muted);opacity:0;margin-bottom:28px">Portfolio — MMXXVI</div>
+      <div style="overflow:hidden;padding:0 10px">
+        <div data-intro-name style="font-family:var(--serif);font-weight:400;font-size:clamp(58px,9vw,132px);line-height:1.02;letter-spacing:-0.02em;color:var(--fg);transform:translateY(112%)">Jerome <span style="font-style:italic;font-weight:300">Lou</span></div>
+      </div>
+      <div data-intro-line style="width:min(40vw,320px);height:1px;background:var(--hair);margin:30px auto 0;transform:scaleX(0);transform-origin:left"></div>
+    </div>
+  </div>
+
 </div>
 
 <script type="module">
@@ -190,8 +202,8 @@ const experience = [
 // ---- app state -------------------------------------------------------------
 const app = { openProject: null };
 
-// scene state shared with the sculpture module
-const scn = { progress: 0, px: 0, py: 0, cx: null, cy: null, frameX: 0, frameY: 0, zoomAmt: 0.6 };
+// scene state shared with the sculpture module (extra* + glMul are intro-driven)
+const scn = { progress: 0, px: 0, py: 0, cx: null, cy: null, frameX: 0, frameY: 0, zoomAmt: 0.6, extraRad: 0, extraAz: 0, extraEl: 0, glMul: 1 };
 
 // lighting defaults (were live-tunable props in the design tool)
 const LIGHTING = { angle: 130, intensity: 0.9, contrast: 0.7 };
@@ -214,9 +226,11 @@ let _v = 0;                       // virtual scroll target (continuous)
 let _smooth = 0;                  // eased virtual position
 let _lastIn = -1e9;
 
+let introActive = true;          // scroll is locked until the intro finishes
+
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
-const bump = (d) => { _v = clamp(_v + d, 0, MAXV); _lastIn = performance.now(); };
-const goStage = (i) => { _v = clamp(Math.round(i), 0, N - 1) * STEP; _lastIn = -1e9; };
+const bump = (d) => { if (introActive) return; _v = clamp(_v + d, 0, MAXV); _lastIn = performance.now(); };
+const goStage = (i) => { if (introActive) return; _v = clamp(Math.round(i), 0, N - 1) * STEP; _lastIn = -1e9; };
 
 // ---- rendering: Work collection, detail, Index lists -----------------------
 const q = (sel) => document.querySelector(sel);
@@ -352,6 +366,7 @@ function bindInput() {
 
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && app.openProject != null) { e.preventDefault(); closeProj(); return; }
+    if (introActive) return;
     const cur = Math.round(_smooth / STEP);
     if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); goStage(cur + 1); }
     else if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); goStage(cur - 1); }
@@ -423,9 +438,10 @@ function runStage() {
     const f = smoothstep(sf - i0);
     scn.frameX = lerp(STAGES[i0].fx, STAGES[i1].fx, f);
     scn.frameY = lerp(STAGES[i0].fy, STAGES[i1].fy, f);
-    // per-stage dim keeps type legible where the model crosses behind it
+    // per-stage dim keeps type legible where the model crosses behind it;
+    // glMul lets the intro fade the whole canvas in
     const dimV = lerp(STAGES[i0].dim || 0, STAGES[i1].dim || 0, f);
-    if (gl) gl.style.opacity = (1 - dimV).toFixed(3);
+    if (gl) gl.style.opacity = ((1 - dimV) * (scn.glMul == null ? 1 : scn.glMul)).toFixed(3);
     // an open project pushes the model further aside to make room for the detail
     if (app.openProject != null) scn.frameX += EXTRA_PAN;
 
@@ -488,6 +504,113 @@ function waitThree() {
   if (++threeTries < 260) setTimeout(waitThree, 50);
 }
 
+// ---- intro (preloader) -------------------------------------------------------
+// Variants (were live-tunable props in the design tool):
+//   'curtain'  — name reveal on a full-bleed curtain that lifts away (default)
+//   'fly-in'   — no curtain; the camera flies in from far out
+//   'light-up' — no curtain; the sculpture lighting warms up from dark
+const INTRO = 'curtain';
+const INTRO_DURATION = 3;         // seconds
+
+function startIntro() {
+  const variant = (INTRO === 'fly-in' || INTRO === 'light-up' || INTRO === 'curtain') ? INTRO : 'curtain';
+  const D = Math.min(8, Math.max(1.2, +INTRO_DURATION || 3));
+  const overlay = q('[data-intro]');
+  const inner = q('[data-intro-inner]');
+  const kick = q('[data-intro-kicker]');
+  const name = q('[data-intro-name]');
+  const line = q('[data-intro-line]');
+  const heroEls = Array.from(document.querySelectorAll('[data-stage="0"] [data-hero]'));
+  const chrome = Array.from(document.querySelectorAll('[data-chrome]'));
+
+  // reset to the pre-intro state
+  heroEls.forEach((el) => { el.style.opacity = '0'; el.style.transform = 'translateY(26px)'; el.style.filter = 'blur(8px)'; });
+  chrome.forEach((el) => { el.style.opacity = '0'; });
+  if (overlay) {
+    if (variant === 'curtain') {
+      overlay.style.display = 'flex';
+      overlay.style.transform = 'none';
+      if (kick) kick.style.opacity = '0';
+      if (name) name.style.transform = 'translateY(112%)';
+      if (line) line.style.transform = 'scaleX(0)';
+      if (inner) inner.style.transform = 'none';
+    } else {
+      overlay.style.display = 'none';
+    }
+  }
+  scn.glMul = variant === 'curtain' ? 1 : 0;
+  scn.extraRad = 0; scn.extraAz = 0; scn.extraEl = 0;
+  introActive = true;
+
+  const clamp01 = (x) => Math.min(1, Math.max(0, x));
+  const eoc = (t) => 1 - Math.pow(1 - t, 3);
+  const eoq = (t) => 1 - Math.pow(1 - t, 5);
+  const eio = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const seg = (t, a, b, e) => (e || eoc)(clamp01((t - a) / (b - a)));
+
+  const t0 = performance.now();
+  let fc = 0;
+  const frame = () => {
+    const t = (performance.now() - t0) / 1000;
+    fc++;
+
+    // staggered hero lines
+    const hs = variant === 'curtain' ? 0.66 * D : variant === 'fly-in' ? 0.50 * D : 0.45 * D;
+    heroEls.forEach((el, i) => {
+      const e = seg(t, hs + i * 0.09 * D, hs + i * 0.09 * D + 0.85, eoc);
+      el.style.opacity = e.toFixed(3);
+      el.style.transform = e >= 1 ? 'none' : 'translateY(' + ((1 - e) * 26).toFixed(1) + 'px)';
+      el.style.filter = e >= 1 ? 'none' : 'blur(' + ((1 - e) * 8).toFixed(2) + 'px)';
+    });
+    // page chrome (nav, dots, version chip)
+    const cs = variant === 'curtain' ? 0.74 * D : variant === 'fly-in' ? 0.62 * D : 0.70 * D;
+    const ce = seg(t, cs, cs + 0.8);
+    chrome.forEach((el) => { el.style.opacity = ce.toFixed(3); });
+
+    if (variant === 'curtain') {
+      if (kick) kick.style.opacity = seg(t, 0.04 * D, 0.28 * D).toFixed(3);
+      if (name) { const ne = seg(t, 0.08 * D, 0.45 * D, eoq); name.style.transform = 'translateY(' + ((1 - ne) * 112).toFixed(1) + '%)'; }
+      if (line) line.style.transform = 'scaleX(' + seg(t, 0.18 * D, 0.56 * D, eio).toFixed(3) + ')';
+      // curtain lifts
+      const ex = seg(t, 0.60 * D, 0.60 * D + Math.max(0.7, 0.33 * D), eio);
+      if (overlay) {
+        overlay.style.transform = 'translateY(' + (-ex * 100).toFixed(2) + '%)';
+        if (inner) inner.style.transform = 'translateY(' + (ex * 60).toFixed(1) + 'px)'; // slight parallax
+        if (ex >= 1) overlay.style.display = 'none';
+      }
+      // camera settles into place behind the lifting curtain
+      const se = seg(t, 0.55 * D, D + 0.6, eoc);
+      scn.extraRad = 2.6 * (1 - se);
+      scn.extraAz = -0.7 * (1 - se);
+    } else if (variant === 'fly-in') {
+      scn.glMul = seg(t, 0, 0.3 * D, eoc);
+      const e = seg(t, 0, 0.88 * D, eio);
+      scn.extraRad = 11 * (1 - e);
+      scn.extraAz = -2.3 * (1 - e);
+      scn.extraEl = 0.45 * (1 - e);
+    } else { // light-up
+      scn.glMul = seg(t, 0.08 * D, 0.70 * D, eio);
+      const e = seg(t, 0.05 * D, 0.85 * D, eio);
+      scn.extraRad = 2.0 * (1 - e);
+      if (sculpt && fc % 3 === 0) {
+        sculpt.setLighting({ angle: 205 - 75 * e, intensity: 0.12 + 0.78 * e, contrast: 1 - 0.3 * e });
+      }
+    }
+
+    if (t < D + 1.4) {
+      requestAnimationFrame(frame);
+    } else {
+      introActive = false;
+      scn.extraRad = 0; scn.extraAz = 0; scn.extraEl = 0; scn.glMul = 1;
+      if (variant === 'light-up' && sculpt) sculpt.setLighting(LIGHTING);
+      heroEls.forEach((el) => { el.style.opacity = '1'; el.style.transform = 'none'; el.style.filter = 'none'; });
+      chrome.forEach((el) => { el.style.opacity = '1'; });
+      if (overlay) overlay.style.display = 'none';
+    }
+  };
+  frame();
+}
+
 // ---- boot ------------------------------------------------------------------
 buildCollection();
 renderWork();
@@ -497,6 +620,7 @@ bindInput();
 initMagnetic();
 runStage();
 waitThree();
+startIntro();
 </script>
 </body>
 </html>
